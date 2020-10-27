@@ -95,8 +95,8 @@ deploy: &deploy
             export POSTGRESQL_PORT=$PROD_POSTGRESQL_PORT
             export POSTGRESQL_DB_NAME=$PROD_POSTGRESQL_DB_NAME
           fi
-        - echo CASSANDRA_PORT
-        - echo POSTGRESQL_PORT
+        - echo $CASSANDRA_PORT
+        - echo $POSTGRESQL_PORT
         - pipe: atlassian/aws-sam-deploy:0.5.2
           variables:
             AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
