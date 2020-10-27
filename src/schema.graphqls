@@ -1,0 +1,761 @@
+input ActivateClosedChatRoomInput {
+	chatRoomId: String!
+	clientId: String!
+}
+
+type ActivateClosedChatRoomOutput {
+	chatRoomId: String
+	chatRoomStatus: String
+	channelId: String
+	channel: ChannelOutput
+	client: ClientOutput
+	organizationsIds: [String]
+}
+
+input AssignChatRoomOperatorInput {
+	chatRoomId: String!
+	operatorId: String!
+	clientId: String!
+}
+
+type AssignChatRoomOperatorOutput {
+	chatRoomId: String
+	channelId: String
+	chatRoomStatus: String
+	operator: OperatorOutput
+}
+
+input ChannelInput {
+	channelId: String
+}
+
+type ChannelOutput {
+	channelId: String
+	channelName: String
+	channelDescription: String
+	channelTechnicalId: String
+	channelType: ChannelTypeOutput
+}
+
+type ChannelTypeOutput {
+	channelTypeId: String
+	channelTypeName: String
+	channelTypeDescription: String
+}
+
+type ChatRoomClientOutput {
+	chatRoomMemberSinceDateTime: String
+	userId: String
+	userFirstName: String
+	userLastName: String
+	userMiddleName: String
+	userPrimaryEmail: String
+	userSecondaryEmail: String
+	userPrimaryPhoneNumber: String
+	userSecondaryPhoneNumber: String
+	userProfilePhotoUrl: String
+	userType: String
+	metadata: String
+	gender: GenderOutput
+	country: CountryOutput
+}
+
+type ChatRoomMessage {
+	messageCreatedDateTime: String!
+	messageUpdatedDateTime: String!
+	messageDeletedDateTime: String
+	messageIsSent: Boolean!
+	messageIsDelivered: Boolean!
+	messageIsRead: Boolean!
+	messageId: String!
+	messageAuthorId: String!
+	messageChannelId: String!
+	messageType: String!
+	messageText: String
+	messageContentUrl: String
+	quotedMessage: QuotedMessageOutput
+}
+
+type ChatRoomOperatorsOutput {
+	chatRoomMemberSinceDateTime: String
+	auth0UserId: String
+	auth0Metadata: String
+	userId: String
+	userFirstName: String
+	userLastName: String
+	userMiddleName: String
+	userPrimaryEmail: String
+	userSecondaryEmail: String
+	userPrimaryPhoneNumber: String
+	userSecondaryPhoneNumber: String
+	userProfilePhotoUrl: String
+	userPositionName: String
+	gender: GenderOutput
+	country: CountryOutput
+	role: RoleOutput
+	organization: OrganizationOutput
+}
+
+type ClientOutput {
+	userId: String
+	userFirstName: String
+	userLastName: String
+	userMiddleName: String
+	userPrimaryEmail: String
+	userSecondaryEmail: String
+	userPrimaryPhoneNumber: String
+	userSecondaryPhoneNumber: String
+	userProfilePhotoUrl: String
+	userType: String
+	metadata: String
+	gender: GenderOutput
+	country: CountryOutput
+}
+
+input CloseChatRoomInput {
+	chatRoomId: String!
+	operatorId: String!
+}
+
+type CloseChatRoomOutput {
+	chatRoomId: String
+	chatRoomStatus: String
+	operator: OperatorOutput
+}
+
+type CountryOutput {
+	countryId: String
+	countryShortName: String
+	countryOfficialName: String
+	countryAlpha2Code: String
+	countryAlpha3Code: String
+	countryNumericCode: String
+	countryCodeTopLevelDomain: String
+}
+
+input CreateChatRoomInput {
+	# Технический идентификатор канала.
+	channelTechnicalId: String!
+	# Название типа канала. Например: widget, telegram.
+	channelTypeName: String!
+	clientId: String!
+}
+
+input CreateChatRoomMessageInput {
+	chatRoomId: String!
+	messageAuthorId: String!
+	messageChannelId: String!
+	messageType: String!
+	messageText: String
+	messageContentUrl: String
+	quotedMessage: QuotedMessageInput
+}
+
+type CreateChatRoomMessageOutput {
+	channelId: String
+	chatRoomId: String
+	messageCreatedDateTime: String
+	messageUpdatedDateTime: String
+	messageDeletedDateTime: String
+	messageIsSent: Boolean
+	messageIsDelivered: Boolean
+	messageIsRead: Boolean
+	messageId: String
+	messageAuthorId: String
+	messageChannelId: String
+	messageType: String
+	messageText: String
+	messageContentUrl: String
+	quotedMessage: QuotedMessageOutput
+}
+
+type CreateChatRoomOutput {
+	chatRoomId: String
+	chatRoomStatus: String
+	channel: ChannelOutput
+	channelId: String
+	client: ClientOutput
+	organizationsIds: [String]
+}
+
+input CreateIdentifiedUserInput {
+	userFirstName: String
+	userLastName: String
+	userMiddleName: String
+	userPrimaryEmail: String
+	userSecondaryEmail: String
+	userPrimaryPhoneNumber: String
+	userSecondaryPhoneNumber: String
+	userProfilePhotoUrl: String
+	genderId: String
+	countryId: String
+	metadata: String!
+}
+
+type CreateIdentifiedUserOutput {
+	userId: String
+	userFirstName: String
+	userLastName: String
+	userMiddleName: String
+	userPrimaryEmail: String
+	userSecondaryEmail: String
+	userPrimaryPhoneNumber: String
+	userSecondaryPhoneNumber: String
+	userProfilePhotoUrl: String
+	gender: GenderOutput
+	country: CountryOutput
+	metadata: String
+}
+
+input CreateInternalUserInput {
+	auth0UserId: String!
+	auth0Metadata: String
+	userFirstName: String
+	userLastName: String
+	userMiddleName: String
+	userPrimaryEmail: String
+	userSecondaryEmail: String
+	userPrimaryPhoneNumber: String
+	userSecondaryPhoneNumber: String
+	userProfilePhotoUrl: String
+	userPositionName: String
+	genderId: String
+	countryId: String
+	roleId: String
+	organizationId: String
+}
+
+type CreateInternalUserOutput {
+	auth0UserId: String
+	auth0Metadata: String
+	userId: String
+	userFirstName: String
+	userLastName: String
+	userMiddleName: String
+	userPrimaryEmail: String
+	userSecondaryEmail: String
+	userPrimaryPhoneNumber: String
+	userSecondaryPhoneNumber: String
+	userProfilePhotoUrl: String
+	userPositionName: String
+	gender: GenderOutput
+	country: CountryOutput
+	role: RoleOutput
+	organization: OrganizationOutput
+}
+
+input CreateOrganizationInput {
+	organizationName: String!
+	organizationDescription: String
+	parentOrganizationId: String
+	parentOrganizationName: String
+	parentOrganizationDescription: String
+	rootOrganizationId: String
+	rootOrganizationName: String
+	rootOrganizationDescription: String
+}
+
+type CreateOrganizationOutput {
+	organizationId: String
+	organizationName: String
+	organizationDescription: String
+	parentOrganizationId: String
+	parentOrganizationName: String
+	parentOrganizationDescription: String
+	rootOrganizationId: String
+	rootOrganizationName: String
+	rootOrganizationDescription: String
+}
+
+input CreateUnidentifiedUserInput {
+	metadata: String!
+}
+
+type CreateUnidentifiedUserOutput {
+	userId: String
+	metadata: String
+}
+
+type GenderOutput {
+	genderId: String
+	genderTechnicalName: String
+	genderPublicName: String
+}
+
+type GetAcceptedChatRoomsOutput {
+	chatRoomId: String
+	lastMessageContent: String
+	lastMessageDateTime: String
+	unreadMessagesNumber: Int
+	channel: ChannelOutput
+	client: ClientOutput
+}
+
+type GetChannelOnlineOperatorsOutput {
+	auth0UserId: String
+	auth0Metadata: String
+	userId: String
+	userFirstName: String
+	userLastName: String
+	userMiddleName: String
+	userPrimaryEmail: String
+	userSecondaryEmail: String
+	userPrimaryPhoneNumber: String
+	userSecondaryPhoneNumber: String
+	userProfilePhotoUrl: String
+	userPositionName: String
+	gender: GenderOutput
+	country: CountryOutput
+	role: RoleOutput
+	organization: OrganizationOutput
+}
+
+type GetChannelsTypesAndChannelsOutput {
+	channelTypeId: String
+	channelTypeName: String
+	channelTypeDescription: String
+	channels: [NonNestedChannelOutput]
+}
+
+type GetChatRoomInformationOutput {
+	chatRoomId: String
+	chatRoomStatus: String
+	channel: ChannelOutput
+	chatRoomClient: ChatRoomClientOutput
+	chatRoomOperators: [ChatRoomOperatorsOutput]
+}
+
+type GetChatRoomMessagesOutput {
+	pagingState: String
+	chatRoomMessages: [ChatRoomMessage]
+}
+
+type GetClientOutput {
+	userId: String
+	userFirstName: String
+	userLastName: String
+	userMiddleName: String
+	userPrimaryEmail: String
+	userSecondaryEmail: String
+	userPrimaryPhoneNumber: String
+	userSecondaryPhoneNumber: String
+	userProfilePhotoUrl: String
+	userType: String
+	metadata: String
+	gender: GenderOutput
+	country: CountryOutput
+}
+
+type GetCompletedChatRoomsOutput {
+	chatRoomId: String
+	lastMessageContent: String
+	lastMessageDateTime: String
+	unreadMessagesNumber: Int
+	channel: ChannelOutput
+	client: ClientOutput
+}
+
+type GetCountriesOutput {
+	countryId: String
+	countryShortName: String
+	countryOfficialName: String
+	countryAlpha2Code: String
+	countryAlpha3Code: String
+	countryNumericCode: String
+	countryCodeTopLevelDomain: String
+}
+
+type GetGendersOutput {
+	genderId: String
+	genderTechnicalName: String
+	genderPublicName: String
+}
+
+type GetInternalUserOutput {
+	auth0UserId: String
+	auth0Metadata: String
+	userId: String
+	userFirstName: String
+	userLastName: String
+	userMiddleName: String
+	userPrimaryEmail: String
+	userSecondaryEmail: String
+	userPrimaryPhoneNumber: String
+	userSecondaryPhoneNumber: String
+	userProfilePhotoUrl: String
+	userPositionName: String
+	gender: GenderOutput
+	country: CountryOutput
+	role: RoleOutput
+	organization: OrganizationOutput
+}
+
+type GetInternalUsersOutput {
+	auth0UserId: String
+	auth0Metadata: String
+	userId: String
+	userFirstName: String
+	userLastName: String
+	userMiddleName: String
+	userPrimaryEmail: String
+	userSecondaryEmail: String
+	userPrimaryPhoneNumber: String
+	userSecondaryPhoneNumber: String
+	userProfilePhotoUrl: String
+	userPositionName: String
+	gender: GenderOutput
+	country: CountryOutput
+	role: RoleOutput
+	organization: OrganizationOutput
+}
+
+type GetNonAcceptedChatRoomsOutput {
+	chatRoomId: String
+	channel: ChannelOutput
+	client: ClientOutput
+}
+
+type GetRolesOutput {
+	roleId: String
+	roleTechnicalName: String
+	rolePublicName: String
+	roleDescription: String
+}
+
+enum MessageStatusOutput {
+	MESSAGE_IS_SEND
+	MESSAGE_IS_DELIVERED
+	MESSAGE_IS_READ
+}
+
+type Mutation {
+	# Данный запрос позволяет создать сообщение в определенной чат комнате.
+	createChatRoomMessage(input: CreateChatRoomMessageInput): CreateChatRoomMessageOutput
+	# Данный запрос позволяет создать чат комнату.
+	createChatRoom(input: CreateChatRoomInput): CreateChatRoomOutput
+	# Данный запрос позволяет назначить оператора ответственным за определенную чат комнату.
+	assignChatRoomOperator(input: AssignChatRoomOperatorInput): AssignChatRoomOperatorOutput
+	# Данный запрос позволяет закрыть чат комнату после завершения диалога между оператором и клиентам.
+	closeChatRoom(input: CloseChatRoomInput): CloseChatRoomOutput
+	# Данный запрос позволяет активировать закрытую чат комнату, когда в нее пишет клиент.
+	activateClosedChatRoom(input: ActivateClosedChatRoomInput): ActivateClosedChatRoomOutput
+	# Данный запрос позволяет обновлять статус отправки сообщения в чат комнате.
+	updateMessageSendingStatus(input: UpdateMessageSendingStatusInput): UpdateMessageSendingStatusOutput
+	# Данный запрос позволяет создать нового идентифицированного пользователя в системе.
+	createIdentifiedUser(input: CreateIdentifiedUserInput): CreateIdentifiedUserOutput
+	# Данный запрос позволяет создать нового внутреннего пользователя в системе.
+	createInternalUser(input: CreateInternalUserInput): CreateInternalUserOutput
+	# Данный запрос позволяет создать организацию.
+	createOrganization(input: CreateOrganizationInput): CreateOrganizationOutput
+	# Данный запрос позволяет создать неидентифицированного пользователя.
+	createUnidentifiedUser(input: CreateUnidentifiedUserInput): CreateUnidentifiedUserOutput
+	# Данный запрос позволяет обновить информацию определенного идентифицированного пользователя системы.
+	updateIdentifiedUser(input: UpdateIdentifiedUserInput): UpdateIdentifiedUserOutput
+	# Данный запрос позволяет обновить информацию определенного внутреннего пользователя системы.
+	updateInternalUser(input: UpdateInternalUserInput): UpdateInternalUserOutput
+	# Данный запрос позволяет обновить информацию определенной организации.
+	updateOrganization(input: UpdateOrganizationInput): UpdateOrganizationOutput
+	# Данный запрос позволяет обновить информацию определенного неидентифицированного пользователя.
+	updateUnidentifiedUser(input: UpdateUnidentifiedUserInput): UpdateUnidentifiedUserOutput
+	# Данный запрос позволяет обновлять статус определенного сообщения в определенной чат комнате.
+	updateMessageStatus(input: UpdateMessageStatusInput): UpdateMessageStatusOutput
+}
+
+type NonNestedChannelOutput {
+	channelId: String
+	channelName: String
+	channelDescription: String
+	channelTechnicalId: String
+}
+
+type OperatorOutput {
+	auth0UserId: String
+	auth0Metadata: String
+	userId: String
+	userFirstName: String
+	userLastName: String
+	userMiddleName: String
+	userPrimaryEmail: String
+	userSecondaryEmail: String
+	userPrimaryPhoneNumber: String
+	userSecondaryPhoneNumber: String
+	userProfilePhotoUrl: String
+	userPositionName: String
+	gender: GenderOutput
+	country: CountryOutput
+	role: RoleOutput
+	organization: OrganizationOutput
+}
+
+type OrganizationOutput {
+	organizationId: String
+	organizationName: String
+	organizationDescription: String
+	parentOrganizationId: String
+	parentOrganizationName: String
+	parentOrganizationDescription: String
+	rootOrganizationId: String
+	rootOrganizationName: String
+	rootOrganizationDescription: String
+}
+
+type Query {
+	# Данный запрос позволяет получить список сообщений определенной чат комнаты.
+	getChatRoomMessages(chatRoomId: String!, fetchSize: Int!, pagingState: String): GetChatRoomMessagesOutput
+	# Данный запрос позволяет получить список типов каналов и каналов, которые может обслужить определенный внутренний пользователь.
+	getChannelsTypesAndChannels(userId: String!): [GetChannelsTypesAndChannelsOutput]
+	# Данный запрос позволяет получить полную информацию определенной чат комнаты.
+	getChatRoomInformation(chatRoomId: String!): GetChatRoomInformationOutput
+	# Данный запрос позволяет получить список непринятых в работу чат комнат.
+	getNonAcceptedChatRooms(
+		organizationId: String!,
+		channelsIds: [String!]!,
+		startDateTime: String,
+		endDateTime: String
+	): [GetNonAcceptedChatRoomsOutput]
+	# Данный запрос позволяет получить список принятых в работу чат комнат.
+	getAcceptedChatRooms(
+		operatorId: String!,
+		channelsIds: [String!]!,
+		startDateTime: String,
+		endDateTime: String
+	): [GetAcceptedChatRoomsOutput]
+	# Данный запрос позволяет получить список завершенных диалогов (закрытых чат комнат).
+	getCompletedChatRooms(
+		operatorId: String!,
+		channelsIds: [String!]!,
+		fetchSize: Int!,
+		pagingState: String,
+		startDateTime: String,
+		endDateTime: String
+	): [GetCompletedChatRoomsOutput]
+	# Данный запрос позволяет получить список стран из справочника.
+	getCountries: [GetCountriesOutput]
+	# Данный запрос позволяет получить список полов из справочника.
+	getGenders: [GetGendersOutput]
+	# Данный запрос позволяет получить информацию определенного внутреннего пользователя системы.
+	getInternalUser(auth0UserId: String!): GetInternalUserOutput
+	# Данный запрос позволяет получить список внутренних пользователей определенной организации.
+	getInternalUsers(rootOrganizationId: String!, currentPageNumber: Int!, recordsNumber: Int!): [GetInternalUsersOutput]
+	# Данный запрос позволяет получить список доступных ролей в системе.
+	getRoles: [GetRolesOutput]
+	# Данный запрос позволяет получить информацию по определенному клиенту.
+	getClient(userId: String!): GetClientOutput
+	# Данный запрос позволяет получить список онлайн операторов, которые могут обслужить определенный канал.
+	getChannelOnlineOperators(
+		channelTechnicalId: String!,
+		channelTypeName: String!,
+		currentPageNumber: Int!,
+		recordsNumber: Int!
+	): [GetChannelOnlineOperatorsOutput]
+}
+
+input QuotedMessageInput {
+	messageId: String
+	messageAuthorId: String
+	messageChannelId: String
+	messageType: String
+	messageText: String
+	messageContentUrl: String
+}
+
+type QuotedMessageOutput {
+	messageId: String
+	messageAuthorId: String
+	messageChannelId: String
+	messageType: String
+	messageText: String
+	messageContentUrl: String
+}
+
+type RoleOutput {
+	roleId: String
+	roleTechnicalName: String
+	rolePublicName: String
+	roleDescription: String
+}
+
+type Subscription {
+	# Данная подписка позволяет следить за новым созданным сообщением.
+	watchCreateChatRoomMessage(chatRoomId: String, channelId: String): CreateChatRoomMessageOutput
+		@aws_subscribe(mutations: ["createChatRoomMessage"])
+	# Данная подписка позволяет следить за новым созданным сообщением по id чат комнаты.
+	watchCreateChatRoomMessageByChatRoomId(chatRoomId: String!): CreateChatRoomMessageOutput
+		@aws_subscribe(mutations: ["createChatRoomMessage"])
+	# Данная подписка позволяет следить за новым созданным сообщением по id канала.
+	watchCreateChatRoomMessageByChannelId(channelId: String!): CreateChatRoomMessageOutput
+		@aws_subscribe(mutations: ["createChatRoomMessage"])
+	# Данная подписка позволяет следить за обновлениями статуса отправки сообщение в чат комнатах.
+	watchUpdateMessageSendingStatus(chatRoomId: String, channelId: String): UpdateMessageSendingStatusOutput
+		@aws_subscribe(mutations: ["updateMessageSendingStatus"])
+	# Данная подписка позволяет следить за обновлениями статуса отправки сообщение в чат комнатах по id чат комнаты.
+	watchUpdateMessageSendingStatusByChatRoomId(chatRoomId: String!): UpdateMessageSendingStatusOutput
+		@aws_subscribe(mutations: ["updateMessageSendingStatus"])
+	# Данная подписка позволяет следить за обновлениями статуса отправки сообщение в чат комнатах по id канала.
+	watchUpdateMessageSendingStatusByChannelId(channelId: String!): UpdateMessageSendingStatusOutput
+		@aws_subscribe(mutations: ["updateMessageSendingStatus"])
+	# Данная подписка позволяет следить за созданными и не принятыми в работу чат комнатами.
+	watchCreateChatRoom(channelId: String!): CreateChatRoomOutput
+		@aws_subscribe(mutations: ["createChatRoom"])
+	# Данная подписка позволяет следить за назначением оператора в определенную чат комнатами по id чат комнаты.
+	watchAssignChatRoomOperatorByChatRoomId(chatRoomId: String!): AssignChatRoomOperatorOutput
+	# Данная подписка позволяет следить за назначением оператора в определенную чат комнатами по id канала.
+	watchAssignChatRoomOperatorByChannelId(channelId: String!): AssignChatRoomOperatorOutput
+		@aws_subscribe(mutations: ["assignChatRoomOperator"])
+	# Данная подписка позволяет следить за закрытием чат комнаты после завершения диалога.
+	watchCloseChatRoom(chatRoomId: String!): CloseChatRoomOutput
+		@aws_subscribe(mutations: ["closeChatRoom"])
+	# Данная подписка позволяет получить информацию о чат комнате, которую активизировали.
+	watchActivateClosedChatRoom(channelId: String!): ActivateClosedChatRoomOutput
+		@aws_subscribe(mutations: ["activateClosedChatRoom"])
+	# Данная подписка позволяет получить информацию об обновленном статусе сообщений из определенной чат комнаты.
+	watchUpdateMessageStatus(chatRoomId: String!): UpdateMessageStatusOutput
+		@aws_subscribe(mutations: ["updateMessageStatus"])
+}
+
+input UpdateIdentifiedUserInput {
+	userId: String!
+	userFirstName: String
+	userLastName: String
+	userMiddleName: String
+	userPrimaryEmail: String
+	userSecondaryEmail: String
+	userPrimaryPhoneNumber: String
+	userSecondaryPhoneNumber: String
+	userProfilePhotoUrl: String
+	genderId: String
+	countryId: String
+	metadata: String!
+}
+
+type UpdateIdentifiedUserOutput {
+	userId: String
+	userFirstName: String
+	userLastName: String
+	userMiddleName: String
+	userPrimaryEmail: String
+	userSecondaryEmail: String
+	userPrimaryPhoneNumber: String
+	userSecondaryPhoneNumber: String
+	userProfilePhotoUrl: String
+	gender: GenderOutput
+	country: CountryOutput
+	metadata: String
+}
+
+input UpdateInternalUserInput {
+	auth0UserId: String!
+	auth0Metadata: String
+	userFirstName: String
+	userLastName: String
+	userMiddleName: String
+	userPrimaryEmail: String
+	userSecondaryEmail: String
+	userPrimaryPhoneNumber: String
+	userSecondaryPhoneNumber: String
+	userProfilePhotoUrl: String
+	userPositionName: String
+	genderId: String
+	countryId: String
+	roleId: String
+	organizationId: String
+}
+
+type UpdateInternalUserOutput {
+	auth0UserId: String
+	auth0Metadata: String
+	userId: String
+	userFirstName: String
+	userLastName: String
+	userMiddleName: String
+	userPrimaryEmail: String
+	userSecondaryEmail: String
+	userPrimaryPhoneNumber: String
+	userSecondaryPhoneNumber: String
+	userProfilePhotoUrl: String
+	userPositionName: String
+	gender: GenderOutput
+	country: CountryOutput
+	role: RoleOutput
+	organization: OrganizationOutput
+}
+
+input UpdateMessageSendingStatusInput {
+	chatRoomId: String!
+	channelId: String!
+	userId: String!
+	actionDescription: String!
+	messageText: String
+}
+
+type UpdateMessageSendingStatusOutput {
+	chatRoomId: String
+	channelId: String
+	userId: String
+	actionDescription: String
+	messageText: String
+}
+
+input UpdateMessageStatusInput {
+	chatRoomId: String!
+	messageId: String!
+	messageStatus: MessageStatusOutput!
+}
+
+type UpdateMessageStatusOutput {
+	channelId: String
+	chatRoomId: String
+	messageCreatedDateTime: String
+	messageUpdatedDateTime: String
+	messageDeletedDateTime: String
+	messageIsSent: Boolean
+	messageIsDelivered: Boolean
+	messageIsRead: Boolean
+	messageId: String
+	messageAuthorId: String
+	messageChannelId: String
+	messageType: String
+	messageText: String
+	messageContentUrl: String
+	quotedMessage: QuotedMessageOutput
+}
+
+input UpdateOrganizationInput {
+	organizationId: String!
+	organizationName: String!
+	organizationDescription: String
+	parentOrganizationId: String
+	parentOrganizationName: String
+	parentOrganizationDescription: String
+	rootOrganizationId: String
+	rootOrganizationName: String
+	rootOrganizationDescription: String
+}
+
+type UpdateOrganizationOutput {
+	organizationId: String
+	organizationName: String
+	organizationDescription: String
+	parentOrganizationId: String
+	parentOrganizationName: String
+	parentOrganizationDescription: String
+	rootOrganizationId: String
+	rootOrganizationName: String
+	rootOrganizationDescription: String
+}
+
+input UpdateUnidentifiedUserInput {
+	userId: String!
+	metadata: String!
+}
+
+type UpdateUnidentifiedUserOutput {
+	userId: String
+	metadata: String!
+}
+
+schema {
+	query: Query
+	mutation: Mutation
+	subscription: Subscription
+}
