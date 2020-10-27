@@ -1,4 +1,3 @@
-import os
 from ssl import SSLContext
 from ssl import CERT_REQUIRED
 from ssl import PROTOCOL_TLSv1_2
@@ -8,44 +7,20 @@ from cassandra.policies import DCAwareRoundRobinPolicy
 import psycopg2
 
 
-CASSANDRA_USERNAME = os.environ["CASSANDRA_USERNAME"]
-print(CASSANDRA_USERNAME)
-CASSANDRA_PASSWORD = os.environ["CASSANDRA_PASSWORD"]
-print(CASSANDRA_PASSWORD)
-CASSANDRA_HOST = os.environ["CASSANDRA_HOST"].split(',')
-print(CASSANDRA_HOST)
-CASSANDRA_PORT = int(os.environ["CASSANDRA_PORT"])
-print(CASSANDRA_PORT)
-CASSANDRA_LOCAL_DC = os.environ["CASSANDRA_LOCAL_DC"]
-print(CASSANDRA_LOCAL_DC)
-CASSANDRA_KEYSPACE_NAME = os.environ["CASSANDRA_KEYSPACE_NAME"]
-print(CASSANDRA_KEYSPACE_NAME)
-POSTGRESQL_USERNAME = os.environ["POSTGRESQL_USERNAME"]
-print(POSTGRESQL_USERNAME)
-POSTGRESQL_PASSWORD = os.environ["POSTGRESQL_PASSWORD"]
-print(POSTGRESQL_PASSWORD)
-POSTGRESQL_HOST = os.environ["POSTGRESQL_HOST"]
-print(POSTGRESQL_HOST)
-POSTGRESQL_PORT = int(os.environ["POSTGRESQL_PORT"])
-print(POSTGRESQL_PORT)
-POSTGRESQL_DB_NAME = os.environ["POSTGRESQL_DB_NAME"]
-print(POSTGRESQL_DB_NAME)
-
-
-def create_cassandra_connection():
+def create_cassandra_connection(db_username, db_password, db_host, db_port, db_local_dc):
     ssl_context = SSLContext(PROTOCOL_TLSv1_2)
     ssl_context.load_verify_locations('/opt/python/lib/python3.8/site-packages/AmazonRootCA1.pem')
     ssl_context.verify_mode = CERT_REQUIRED
     auth_provider = PlainTextAuthProvider(
-        username=CASSANDRA_USERNAME,
-        password=CASSANDRA_PASSWORD
+        username=db_username,
+        password=db_password
     )
     cluster = Cluster(
-        CASSANDRA_HOST,
+        db_host,
         ssl_context=ssl_context,
         auth_provider=auth_provider,
-        port=CASSANDRA_PORT,
-        load_balancing_policy=DCAwareRoundRobinPolicy(local_dc=CASSANDRA_LOCAL_DC),
+        port=db_port,
+        load_balancing_policy=DCAwareRoundRobinPolicy(local_dc=db_local_dc),
         protocol_version=4,
         connect_timeout=60,
         idle_heartbeat_interval=0
@@ -54,12 +29,12 @@ def create_cassandra_connection():
     return connection
 
 
-def create_postgresql_connection():
+def create_postgresql_connection(db_username, db_password, db_host, db_port, db_name):
     connection = psycopg2.connect(
-        user=POSTGRESQL_USERNAME,
-        password=POSTGRESQL_PASSWORD,
-        host=POSTGRESQL_HOST,
-        port=POSTGRESQL_PORT,
-        database=POSTGRESQL_DB_NAME
+        user=db_username,
+        password=db_password,
+        host=db_host,
+        port=db_port,
+        database=db_name
     )
     return connection
