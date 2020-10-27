@@ -14,7 +14,7 @@ Parameters:
     CassandraHost:
         Type: String
     CassandraPort:
-        Type: Integer
+        Type: String
     CassandraLocalDC:
         Type: String
     CassandraKeyspaceName:
@@ -26,7 +26,7 @@ Parameters:
     PostgreSQLHost:
         Type: String
     PostgreSQLPort:
-        Type: Integer
+        Type: String
     PostgreSQLDBName:
         Type: String
 Resources:
