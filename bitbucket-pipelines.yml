@@ -124,7 +124,7 @@ deploy: &deploy
                 },
                 {
                   "ParameterKey": "CassandraPort",
-                  "ParameterValue": ${CASSANDRA_PORT}
+                  "ParameterValue": $CASSANDRA_PORT
                 },
                 {
                   "ParameterKey": "CassandraLocalDC",
@@ -148,7 +148,7 @@ deploy: &deploy
                 },
                 {
                   "ParameterKey": "PostgreSQLPort",
-                  "ParameterValue": ${POSTGRESQL_PORT}
+                  "ParameterValue": $POSTGRESQL_PORT
                 },
                 {
                   "ParameterKey": "PostgreSQLDBName",
