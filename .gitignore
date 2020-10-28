@@ -126,3 +126,4 @@ $RECYCLE.BIN/
 */build/*
 AmazonRootCA1.pem
 .aws-sam
+samconfig.toml
