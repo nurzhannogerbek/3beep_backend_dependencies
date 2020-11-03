@@ -377,3 +377,10 @@ where
 and
 	message_id = 64c6ae42-0a17-11eb-a05a-bf9f3fdc2e73
 limit 1;
+
+/*
+ * Данные cql запросы позволяет добавить столбцы в таблицу "non_accepted_chat_rooms".
+ */
+alter table non_accepted_chat_rooms add last_message_content text;
+alter table non_accepted_chat_rooms add last_message_date_time timestamp;
+alter table non_accepted_chat_rooms add unread_messages_number int;

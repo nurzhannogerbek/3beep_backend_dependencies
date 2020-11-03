@@ -60,7 +60,7 @@ create table organizations (
 	root_organization_id uuid null,
 	foreign key (root_organization_id) references organizations (organization_id),
 	root_organization_name varchar null,
-	root_organization_description text null,
+	root_organization_description text null
 );
 
 /*
@@ -314,7 +314,7 @@ create table internal_users (
 	role_id uuid null,
 	foreign key (role_id) references roles (role_id),
 	organization_id uuid null,
-	foreign key (organization_id) references roles (organization_id),
+	foreign key (organization_id) references organizations (organization_id),
 	auth0_user_id varchar not null unique,
 	auth0_metadata json null
 );
@@ -969,3 +969,105 @@ and
 and
 	users.unidentified_user_id is null
 offset 0 limit 10;
+
+/*
+ * Данный sql запрос позволяет получить n количество чат комната в которых участвовал клиент.
+ */
+select
+	chat_rooms_users_relationship.entry_created_date_time as chat_room_member_since_date_time,
+	chat_rooms.chat_room_id,
+	chat_rooms.chat_room_status
+from
+	chat_rooms_users_relationship
+left join chat_rooms on
+	chat_rooms_users_relationship.chat_room_id = chat_rooms.chat_room_id
+left join channels on
+	chat_rooms.channel_id = channels.channel_id
+left join channel_types on
+	channels.channel_type_id = channel_types.channel_type_id
+where
+	chat_rooms_users_relationship.user_id = 'ac606654-6934-40e9-a758-a6c01b9bcfb7'
+and
+	channels.channel_technical_id = 'aHe6ZHJgnots2fUXQFVBtX'
+and
+	lower(channel_types.channel_type_name) = lower('widget')
+order by
+	chat_rooms_users_relationship.entry_created_date_time desc
+offset 0 limit 10;
+
+/*
+ * Получить список последних операторов определенных чат комнат.
+ */
+select
+	distinct on (chat_rooms_users_relationship.chat_room_id) chat_room_id,
+	internal_users.auth0_user_id,
+	internal_users.auth0_metadata::text,
+	users.user_id,
+	internal_users.internal_user_first_name as user_first_name,
+	internal_users.internal_user_last_name as user_last_name,
+	internal_users.internal_user_middle_name as user_middle_name,
+	internal_users.internal_user_primary_email as user_primary_email,
+	internal_users.internal_user_secondary_email as user_secondary_email,
+	internal_users.internal_user_primary_phone_number as user_primary_phone_number,
+	internal_users.internal_user_secondary_phone_number as user_secondary_phone_number,
+	internal_users.internal_user_profile_photo_url as user_profile_photo_url,
+	internal_users.internal_user_position_name as user_position_name,
+	genders.gender_id,
+	genders.gender_technical_name,
+	genders.gender_public_name,
+	countries.country_id,
+	countries.country_short_name,
+	countries.country_official_name,
+	countries.country_alpha_2_code,
+	countries.country_alpha_3_code,
+	countries.country_numeric_code,
+	countries.country_code_top_level_domain,
+	roles.role_id,
+	roles.role_technical_name,
+	roles.role_public_name,
+	roles.role_description,
+	organizations.organization_id,
+	organizations.organization_name,
+	organizations.organization_description,
+	organizations.parent_organization_id,
+	organizations.parent_organization_name,
+	organizations.parent_organization_description,
+	organizations.root_organization_id,
+	organizations.root_organization_name,
+	organizations.root_organization_description
+from
+	chat_rooms_users_relationship
+left join users on
+	chat_rooms_users_relationship.user_id = users.user_id
+left join internal_users on
+	users.internal_user_id = internal_users.internal_user_id
+left join genders on
+	internal_users.gender_id = genders.gender_id
+left join countries on
+	internal_users.country_id = countries.country_id
+left join roles on
+	internal_users.role_id = roles.role_id
+left join organizations on
+	internal_users.organization_id = organizations.organization_id
+where
+	chat_rooms_users_relationship.chat_room_id in (
+		'6630133d-1539-11eb-8b54-ff6e377b3d0e',
+		'60eadc2c-1539-11eb-8c4d-ff6e377b3d0e',
+		'5ebe0c11-1539-11eb-b821-ff6e377b3d0e',
+		'14dceaf9-1539-11eb-9b78-ff6e377b3d0e',
+		'954bf8f9-1538-11eb-ac39-ff6e377b3d0e',
+		'93c3767d-1538-11eb-a9ee-ff6e377b3d0e',
+		'7717823a-1538-11eb-852e-ff6e377b3d0e',
+		'6ce1ef07-1538-11eb-8055-ff6e377b3d0e',
+		'6acc6175-1538-11eb-bf35-ff6e377b3d0e',
+		'5c395d7a-1538-11eb-97b8-ff6e377b3d0e'
+	)
+and
+	users.internal_user_id is not null
+and
+	users.unidentified_user_id is null
+and
+	users.identified_user_id is null
+order by
+	chat_rooms_users_relationship.chat_room_id,
+	chat_rooms_users_relationship.entry_created_date_time desc;
