@@ -1071,3 +1071,107 @@ and
 order by
 	chat_rooms_users_relationship.chat_room_id,
 	chat_rooms_users_relationship.entry_created_date_time desc;
+
+/*
+ * Данный sql запрос позволяет получить список клиентов определенной организации.
+ */
+select
+	distinct users.user_id,
+	case
+		when users.identified_user_id is not null
+		and users.unidentified_user_id is null then identified_users.identified_user_first_name
+		else null
+	end as user_first_name,
+	case
+		when users.identified_user_id is not null
+		and users.unidentified_user_id is null then identified_users.identified_user_last_name
+		else null
+	end as user_last_name,
+	case
+		when users.identified_user_id is not null
+		and users.unidentified_user_id is null then identified_users.identified_user_middle_name
+		else null
+	end as user_middle_name,
+	case
+		when users.identified_user_id is not null
+		and users.unidentified_user_id is null then identified_users.identified_user_primary_email
+		else null
+	end as user_primary_email,
+	case
+		when users.identified_user_id is not null
+		and users.unidentified_user_id is null then identified_users.identified_user_secondary_email
+		else null
+	end as user_secondary_email,
+	case
+		when users.identified_user_id is not null
+		and users.unidentified_user_id is null then identified_users.identified_user_primary_phone_number
+		else null
+	end as user_primary_phone_number,
+	case
+		when users.identified_user_id is not null
+		and users.unidentified_user_id is null then identified_users.identified_user_secondary_phone_number
+		else null
+	end as user_secondary_phone_number,
+	case
+		when users.identified_user_id is not null
+		and users.unidentified_user_id is null then identified_users.identified_user_profile_photo_url
+		else null
+	end as user_profile_photo_url,
+	case
+		when users.identified_user_id is not null
+		and users.unidentified_user_id is null then 'identified_user'
+		else 'unidentified_user'
+	end as user_type,
+	case
+		when users.identified_user_id is not null
+		and users.unidentified_user_id is null then identified_users.metadata::text
+		else unidentified_users.metadata::text
+	end as metadata,
+	genders.gender_id,
+	genders.gender_technical_name,
+	genders.gender_public_name,
+	countries.country_id,
+	countries.country_short_name,
+	countries.country_official_name,
+	countries.country_alpha_2_code,
+	countries.country_alpha_3_code,
+	countries.country_numeric_code,
+	countries.country_code_top_level_domain
+from
+	chat_rooms_users_relationship
+left join users on
+	chat_rooms_users_relationship.user_id = users.user_id
+left join identified_users on
+	users.identified_user_id = identified_users.identified_user_id
+left join unidentified_users on
+	users.unidentified_user_id = unidentified_users.unidentified_user_id
+left join genders on
+	identified_users.gender_id = genders.gender_id
+left join countries on
+	identified_users.country_id = countries.country_id
+where
+	users.internal_user_id is null
+and
+	(users.unidentified_user_id is not null or users.identified_user_id is not null)
+and
+	chat_rooms_users_relationship.chat_room_id in (
+		select
+			chat_rooms.chat_room_id
+		from
+			chat_rooms
+		where
+			chat_rooms.channel_id in (
+			select
+				channels_organizations_relationship.channel_id
+			from
+				channels_organizations_relationship
+			left join organizations on
+				channels_organizations_relationship.organization_id = organizations.organization_id
+			where
+				organizations.organization_id = '41c88fbc-3697-47a0-a79b-b838d2348d65'
+				or organizations.root_organization_id = '41c88fbc-3697-47a0-a79b-b838d2348d65'
+		)
+	)
+order by
+	users.user_id
+offset 0 limit 10;
