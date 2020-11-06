@@ -25,6 +25,16 @@ Resources:
                 - python3.8
             LicenseInfo: MIT
             RetentionPolicy: Retain
+    Requests:
+        Type: AWS::Serverless::LayerVersion
+        Properties:
+            LayerName:
+                Fn::Sub: "${EnvironmentName}Requests"
+            ContentUri: src/aws_lambda_layers/archives/requests.zip
+            CompatibleRuntimes:
+                - python3.8
+            LicenseInfo: MIT
+            RetentionPolicy: Retain
 Outputs:
     Databases:
         Value:
@@ -38,3 +48,9 @@ Outputs:
         Export:
             Name:
                 Fn::Sub: "${AWS::StackName}:${EnvironmentName}Utils"
+    Requests:
+        Value:
+            Ref: Requests
+        Export:
+            Name:
+                Fn::Sub: "${AWS::StackName}:${EnvironmentName}Requests"
