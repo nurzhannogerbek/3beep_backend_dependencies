@@ -41,13 +41,13 @@ Outputs:
             Ref: Databases
         Export:
             Name:
-                Fn::Sub: "${AWS::StackName}:${EnvironmentName}Databases"
+                Fn::Sub: "${AWS::StackName}:${EnvironmentName}DatabasesV1"
     Utils:
         Value:
             Ref: Utils
         Export:
             Name:
-                Fn::Sub: "${AWS::StackName}:${EnvironmentName}Utils"
+                Fn::Sub: "${AWS::StackName}:${EnvironmentName}UtilsV1"
     Requests:
         Value:
             Ref: Requests
