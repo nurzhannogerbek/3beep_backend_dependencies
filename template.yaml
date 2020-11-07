@@ -3,18 +3,7 @@ Transform: AWS::Serverless-2016-10-31
 Parameters:
     EnvironmentName:
         Type: String
-        Default: Test
 Resources:
-    Requests:
-        Type: AWS::Serverless::LayerVersion
-        Properties:
-            LayerName:
-                Fn::Sub: "${EnvironmentName}Requests"
-            ContentUri: src/aws_lambda_layers/archives/requests.zip
-            CompatibleRuntimes:
-                - python3.8
-            LicenseInfo: MIT
-            RetentionPolicy: Retain
     Databases:
         Type: AWS::Serverless::LayerVersion
         Properties:
@@ -31,6 +20,16 @@ Resources:
             LayerName:
                 Fn::Sub: "${EnvironmentName}Utils"
             ContentUri: src/aws_lambda_layers/archives/utils.zip
+            CompatibleRuntimes:
+                - python3.8
+            LicenseInfo: MIT
+            RetentionPolicy: Retain
+    Requests:
+        Type: AWS::Serverless::LayerVersion
+        Properties:
+            LayerName:
+                Fn::Sub: "${EnvironmentName}Requests"
+            ContentUri: src/aws_lambda_layers/archives/requests.zip
             CompatibleRuntimes:
                 - python3.8
             LicenseInfo: MIT
