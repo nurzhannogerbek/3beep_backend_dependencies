@@ -35,22 +35,3 @@ Resources:
                 - python3.8
             LicenseInfo: MIT
             RetentionPolicy: Retain
-Outputs:
-    Requests:
-        Value:
-            Ref: Requests
-        Export:
-            Name:
-                Fn::Sub: "${AWS::StackName}:${EnvironmentName}Requests"
-    Databases:
-        Value:
-            Ref: Databases
-        Export:
-            Name:
-                Fn::Sub: "${AWS::StackName}:${EnvironmentName}Databases"
-    Utils:
-        Value:
-            Ref: Utils
-        Export:
-            Name:
-                Fn::Sub: "${AWS::StackName}:${EnvironmentName}Utils"
