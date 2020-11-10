@@ -38,7 +38,7 @@ create table channels (
 alter table channels add column channel_technical_id text not null;
 
 /*
- * Данный sql запрос добавляет таблицу unique constraint для уникальности технического идентификатора в рамках определенного канала.
+ * Данный sql запрос добавляет в таблицу unique constraint для уникальности технического идентификатора в рамках определенного канала.
  */
 alter table channels add unique (channel_type_id, channel_technical_id);
 
@@ -1175,3 +1175,82 @@ and
 order by
 	users.user_id
 offset 0 limit 10;
+
+/*
+ * Добавить столбец, который хранит информацию по username клиента из Telegram канала.
+ */
+alter table identified_users add telegram_username varchar null;
+alter table identified_users add unique (telegram_username);
+
+
+/*
+ * Данный sql запрос создает нового пользователя из Telegram канала в случае необходимости.
+ */
+insert into identified_users(
+	identified_user_first_name,
+	identified_user_last_name,
+	metadata,
+	telegram_username
+) values(
+	'Nurzhan',
+	'Nogerbek',
+	"{'id': 168258901, \'is_bot\': false, 'first_name': 'Nurzhan', 'last_name': 'Nogerbek', 'username': 'nurzhannogerbek', 'language_code': 'ru'}",
+	'nurzhannogerbek'
+)
+on conflict on constraint identified_users_telegram_username_key
+do nothing
+returning
+	identified_user_id;
+
+/*
+ * В данной таблице идет сопоставление наших технических идентификатор с идентификаторами из telegram.
+ */
+create table telegram_chat_rooms (
+	entry_created_date_time timestamp not null default now(),
+	entry_updated_date_time timestamp not null default now(),
+	entry_deleted_date_time timestamp null,
+	chat_room_id uuid not null,
+	foreign key (chat_room_id) references chat_rooms (chat_room_id),
+	telegram_chat_id varchar not null
+);
+
+/*
+ * Данный sql запрос добавляет в таблицу unique constraint для уникальности технического идентификатора в рамках определенного канала.
+ */
+alter table telegram_chat_rooms add unique (chat_room_id, telegram_chat_id);
+
+/*
+ * Добавить возможность автогенерации идентификатора в таблице "chat_rooms".
+ */
+alter table chat_rooms
+alter column chat_room_id set default uuid_generate_v4();
+
+/*
+ * Создать чат комнату для telegram беседы.
+ */
+insert into chat_rooms (
+	channel_id,
+	chat_room_status
+)
+select
+	channel_id,
+	'non_accepted' as chat_room_status
+from
+	channels
+where
+	channel_technical_id = '1481754199:AAGlv9XTRaFLfDVgRTnx5ZTXRNE6a1UgesI'
+	limit 1
+returning
+	chat_room_id,
+	channel_id;
+
+/*
+ * Привязать ранее созданную чат комнату с техническим идентификатором из telegram.
+ */
+insert into telegram_chat_rooms (
+	chat_room_id,
+	telegram_chat_id
+) values (
+	'41c88fbc-3697-47a0-a79b-b838d2348d65',
+	'168258901'
+);
