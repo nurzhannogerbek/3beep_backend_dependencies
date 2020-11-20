@@ -1203,7 +1203,7 @@ returning
 	identified_user_id;
 
 /*
- * В данной таблице идет сопоставление наших технических идентификатор с идентификаторами из telegram.
+ * В данной таблице идет сопоставление наших технических идентификаторов с идентификаторами из telegram.
  */
 create table telegram_chat_rooms (
 	entry_created_date_time timestamp not null default now(),
@@ -1254,3 +1254,27 @@ insert into telegram_chat_rooms (
 	'41c88fbc-3697-47a0-a79b-b838d2348d65',
 	'168258901'
 );
+
+/*
+ * Добавить столбецы, который хранит информацию по клиенту из WhatsApp канала.
+ */
+alter table identified_users add whatsapp_profile varchar null;
+alter table identified_users add whatsapp_username varchar null;
+alter table identified_users add unique (whatsapp_username);
+
+/*
+ * В данной таблице идет сопоставление наших технических идентификаторов с идентификаторами из whatsapp.
+ */
+create table whatsapp_chat_rooms (
+	entry_created_date_time timestamp not null default now(),
+	entry_updated_date_time timestamp not null default now(),
+	entry_deleted_date_time timestamp null,
+	chat_room_id uuid not null,
+	foreign key (chat_room_id) references chat_rooms (chat_room_id),
+	whatsapp_chat_id varchar not null
+);
+
+/*
+ * Данный sql запрос добавляет в таблицу unique constraint для уникальности технического идентификатора в рамках определенного канала.
+ */
+alter table whatsapp_chat_rooms add unique (chat_room_id, whatsapp_chat_id);
