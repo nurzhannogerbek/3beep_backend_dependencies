@@ -1311,3 +1311,21 @@ set
 	entry_deleted_date_time = now()
 where
 	unidentified_user_id = '7350fb90-135f-4023-947d-7c18814a686b';
+
+/*
+ * Данный sql запрос позволяет получить агрегированный список идентификаторов по типу пользователей.
+ */
+select
+    array_remove(array_agg(distinct identified_user_id), null) as identified_users_ids,
+    array_remove(array_agg(distinct unidentified_user_id), null) as unidentified_users_ids
+from
+    users
+where user_id in (
+	'9951adfd-3240-4b1a-b340-67281b90b57c',
+	'b868fad7-e060-459d-a4b4-8a2b8504b703',
+	'b06c34f9-bca8-48fb-ac30-04f599b1bd9c',
+	'2f7b6427-145c-4e76-9465-93457b3328cf',
+	'86763fd7-fa2e-413c-aefe-658b35ed9aeb',
+	'f17e30f4-84d4-48e3-a6a8-abf3a55e890b'
+)
+limit 1;
