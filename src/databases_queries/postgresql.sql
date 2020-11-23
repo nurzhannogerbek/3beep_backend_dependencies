@@ -1278,3 +1278,36 @@ create table whatsapp_chat_rooms (
  * Данный sql запрос добавляет в таблицу unique constraint для уникальности технического идентификатора в рамках определенного канала.
  */
 alter table whatsapp_chat_rooms add unique (chat_room_id, whatsapp_chat_id);
+
+/*
+ * Данный sql запрос позволяет переквалифицировать неидентифицированного пользователя в идентифицированного.
+ */
+update
+	users x
+set
+	identified_user_id = '7207690e-676a-4279-a74b-36b1a5543ba9',
+	unidentified_user_id = null
+from (
+		select
+			*
+		from
+			users
+		where
+			user_id = '7350fb90-135f-4023-947d-7c18814a686b'
+		for update
+) y
+where
+	x.user_id = y.user_id
+returning
+	y.unidentified_user_id;
+
+
+/*
+ * Данный sql запрос позволяет поставить метку на удаление у неидентифицированного пользователя.
+ */
+update
+	unidentified_users
+set
+	entry_deleted_date_time = now()
+where
+	unidentified_user_id = '7350fb90-135f-4023-947d-7c18814a686b';
