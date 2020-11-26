@@ -18,6 +18,7 @@ def create_cassandra_connection(db_username, db_password, db_host, db_port, db_l
         password=db_password
     )
     default_profile = ExecutionProfile(
+        load_balancing_policy=DCAwareRoundRobinPolicy(local_dc=db_local_dc),
         consistency_level=ConsistencyLevel.LOCAL_QUORUM,
         request_timeout=60,
         row_factory=dict_factory
@@ -27,7 +28,6 @@ def create_cassandra_connection(db_username, db_password, db_host, db_port, db_l
         ssl_context=ssl_context,
         auth_provider=auth_provider,
         port=db_port,
-        load_balancing_policy=DCAwareRoundRobinPolicy(local_dc=db_local_dc),
         protocol_version=4,
         connect_timeout=60,
         idle_heartbeat_interval=0,
