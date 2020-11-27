@@ -1324,3 +1324,44 @@ where user_id in (
 	'0c77072d-2462-430a-a9cd-d7162cd16b42'
 )
 limit 1;
+
+/*
+ * Данный sql запрос создает таблицу в которой хранится бизнес аккаунты из WhatsApp.
+ */
+create table whatsapp_business_accounts (
+	entry_created_date_time timestamp not null default now(),
+	entry_updated_date_time timestamp not null default now(),
+	entry_deleted_date_time timestamp null,
+	business_account varchar not null unique,
+	channel_id uuid not null,
+	foreign key (channel_id) references channels (channel_id)
+);
+
+/*
+ * Данный sql запрос позволяет получить технический token (api key) определенного бизнес аккаунта WhatsApp.
+ */
+select
+	channels.channel_technical_id as whatsapp_bot_token
+from
+	whatsapp_business_accounts
+left join channels on
+	whatsapp_business_accounts.channel_id = channels.channel_id
+where
+	whatsapp_business_accounts.business_account = '+491606232334'
+limit 1;
+
+/*
+ * Получить агрегированные данные касательно чат комнаты созданной в рамках WhatsApp.
+ */
+select
+	whatsapp_chat_rooms.whatsapp_chat_id,
+	channels.channel_technical_id as whatsapp_bot_token
+from
+	chat_rooms
+left join whatsapp_chat_rooms on
+	chat_rooms.chat_room_id = whatsapp_chat_rooms.chat_room_id
+left join channels on
+	chat_rooms.channel_id = channels.channel_id
+where
+	chat_rooms.chat_room_id = '5cc13f81-2b19-11eb-8970-3f20b721eacb'
+limit 1;
