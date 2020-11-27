@@ -1365,3 +1365,15 @@ left join channels on
 where
 	chat_rooms.chat_room_id = '5cc13f81-2b19-11eb-8970-3f20b721eacb'
 limit 1;
+
+/*
+ * Данный sql запрос создает таблицу в которой хранится бизнес аккаунты из Telegram.
+ */
+create table telegram_business_accounts (
+	entry_created_date_time timestamp not null default now(),
+	entry_updated_date_time timestamp not null default now(),
+	entry_deleted_date_time timestamp null,
+	business_account varchar not null unique,
+	channel_id uuid not null,
+	foreign key (channel_id) references channels (channel_id)
+);
