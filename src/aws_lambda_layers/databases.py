@@ -13,10 +13,7 @@ def create_cassandra_connection(db_username, db_password, db_host, db_port, db_l
     ssl_context = SSLContext(PROTOCOL_TLSv1_2)
     ssl_context.load_verify_locations('/opt/python/lib/python3.8/site-packages/AmazonRootCA1.pem')
     ssl_context.verify_mode = CERT_REQUIRED
-    auth_provider = PlainTextAuthProvider(
-        username=db_username,
-        password=db_password
-    )
+    auth_provider = PlainTextAuthProvider(username=db_username, password=db_password)
     default_profile = ExecutionProfile(
         load_balancing_policy=DCAwareRoundRobinPolicy(local_dc=db_local_dc),
         consistency_level=ConsistencyLevel.LOCAL_QUORUM,
@@ -31,20 +28,13 @@ def create_cassandra_connection(db_username, db_password, db_host, db_port, db_l
         protocol_version=4,
         connect_timeout=60,
         idle_heartbeat_interval=0,
-        execution_profiles={
-            EXEC_PROFILE_DEFAULT: default_profile
-        }
+        execution_profiles={EXEC_PROFILE_DEFAULT: default_profile}
     )
     connection = cluster.connect()
+    connection.autocommit = True
     return connection
 
 
 def create_postgresql_connection(db_username, db_password, db_host, db_port, db_name):
-    connection = psycopg2.connect(
-        user=db_username,
-        password=db_password,
-        host=db_host,
-        port=db_port,
-        database=db_name
-    )
+    connection = psycopg2.connect(user=db_username, password=db_password, host=db_host, port=db_port, database=db_name)
     return connection
