@@ -31,10 +31,10 @@ def create_cassandra_connection(db_username, db_password, db_host, db_port, db_l
         execution_profiles={EXEC_PROFILE_DEFAULT: default_profile}
     )
     connection = cluster.connect()
-    connection.autocommit = True
     return connection
 
 
 def create_postgresql_connection(db_username, db_password, db_host, db_port, db_name):
     connection = psycopg2.connect(user=db_username, password=db_password, host=db_host, port=db_port, database=db_name)
+    connection.autocommit = True
     return connection
