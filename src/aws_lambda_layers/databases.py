@@ -3,7 +3,7 @@ from ssl import CERT_REQUIRED
 from ssl import PROTOCOL_TLSv1_2
 from cassandra.cluster import Cluster, ExecutionProfile, EXEC_PROFILE_DEFAULT
 from cassandra.auth import PlainTextAuthProvider
-from cassandra.policies import DCAwareRoundRobinPolicy, RetryPolicy
+from cassandra.policies import DCAwareRoundRobinPolicy
 from cassandra import ConsistencyLevel
 from cassandra.query import dict_factory
 import psycopg2
