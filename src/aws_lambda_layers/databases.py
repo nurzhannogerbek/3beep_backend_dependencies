@@ -16,7 +16,6 @@ def create_cassandra_connection(db_username, db_password, db_host, db_port, db_l
     auth_provider = PlainTextAuthProvider(username=db_username, password=db_password)
     default_profile = ExecutionProfile(
         load_balancing_policy=DCAwareRoundRobinPolicy(local_dc=db_local_dc),
-        retry_policy=RetryPolicy(),
         consistency_level=ConsistencyLevel.LOCAL_QUORUM,
         request_timeout=60,
         row_factory=dict_factory
