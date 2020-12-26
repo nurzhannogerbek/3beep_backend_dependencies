@@ -1377,3 +1377,27 @@ create table telegram_business_accounts (
 	channel_id uuid not null,
 	foreign key (channel_id) references channels (channel_id)
 );
+
+/*
+ * Добавить столбец "last_message_from_client_date_time", в котором хранится последнее время отправки сообщение клиентом WhatsApp.
+ */
+alter table whatsapp_chat_rooms add column last_message_from_client_date_time timestamp null;
+
+/*
+ * Получить список чат комнат по WhatsApp со статусами 'non_accepted', 'accepted'.
+ */
+select
+	chat_rooms.chat_room_id,
+	whatsapp_chat_rooms.last_message_from_client_date_time
+from
+	chat_rooms
+left join channels on
+	chat_rooms.channel_id = channels.channel_id
+left join channel_types on
+	channels.channel_type_id = channel_types.channel_type_id
+left join whatsapp_chat_rooms on
+	chat_rooms.chat_room_id = whatsapp_chat_rooms.chat_room_id
+where
+	channel_types.channel_type_name = 'whatsapp'
+and
+	chat_rooms.chat_room_status in ('non_accepted', 'accepted');
