@@ -384,3 +384,10 @@ limit 1;
 alter table non_accepted_chat_rooms add last_message_content text;
 alter table non_accepted_chat_rooms add last_message_date_time timestamp;
 alter table non_accepted_chat_rooms add unread_messages_number int;
+
+/*
+ * Добавить столбец "last_message_from_client_date_time" в таблицы с карточками чат комнатами.
+ */
+alter table non_accepted_chat_rooms add last_message_from_client_date_time timestamp;
+alter table accepted_chat_rooms add last_message_from_client_date_time timestamp;
+alter table completed_chat_rooms add last_message_from_client_date_time timestamp;
