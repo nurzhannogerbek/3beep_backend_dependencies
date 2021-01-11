@@ -34,3 +34,13 @@ Resources:
         - python3.8
       LicenseInfo: MIT
       RetentionPolicy: Retain
+  Pillow:
+    Type: 'AWS::Serverless::LayerVersion'
+    Properties:
+      LayerName:
+        'Fn::Sub': '${EnvironmentName}Pillow'
+      ContentUri: src/aws_lambda_layers/archives/Pillow.zip
+      CompatibleRuntimes:
+        - python3.8
+      LicenseInfo: MIT
+      RetentionPolicy: Retain
