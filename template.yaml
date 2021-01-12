@@ -34,12 +34,12 @@ Resources:
         - python3.8
       LicenseInfo: MIT
       RetentionPolicy: Retain
-  Pillow:
+  OpenCV:
     Type: 'AWS::Serverless::LayerVersion'
     Properties:
       LayerName:
-        'Fn::Sub': '${EnvironmentName}Pillow'
-      ContentUri: src/aws_lambda_layers/archives/Pillow.zip
+        'Fn::Sub': '${EnvironmentName}OpenCV'
+      ContentUri: src/aws_lambda_layers/archives/opencv.zip
       CompatibleRuntimes:
         - python3.8
       LicenseInfo: MIT
