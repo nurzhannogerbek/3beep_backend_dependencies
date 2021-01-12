@@ -42,8 +42,10 @@ cp -v /lib64/libGLdispatch.so.0.0.0 /opencv/python/lib/python3.8/site-packages/o
 
 3. On local workstation again (terminal window 1)
 
-Pack the python folder into opencv.zip.
+Pack the python folder into `opencv.zip`.
 
 ```
 zip -r -9 opencv.zip python
 ```
+
+Add AWS provide `SciPy` layer `AWSLambda-Python38-SciPy1x`.
