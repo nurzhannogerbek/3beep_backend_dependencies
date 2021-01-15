@@ -1,13 +1,13 @@
 # How do I package the OpenCV library in a .zip file?
 You will need to add a bunch of dependencies to use OpenCV library as AWS Lambda Layer.
 
-1. On the local workstation (terminal window 1):
+A. On the local workstation (terminal window 1):
 ```
 mkdir /tmp/opencv && cd /tmp/opencv
 echo opencv-python==4.5.1.48 > ./requirements.txt
 ```
 
-2. On local workstation (terminal window 2):
+B. On local workstation (terminal window 2):
 ```
 docker run -it -v /tmp/opencv:/opencv  lambci/lambda:build-python3.8 bash
 ```
@@ -40,7 +40,7 @@ cp -v /usr/lib64/libXau.so.6 /opencv/python/lib/python3.8/site-packages/opencv_p
 cp -v /lib64/libGLdispatch.so.0.0.0 /opencv/python/lib/python3.8/site-packages/opencv_python.libs/
 ```
 
-3. On local workstation again (terminal window 1)
+C. On local workstation again (terminal window 1):
 
 Pack the python folder into `opencv.zip`.
 
