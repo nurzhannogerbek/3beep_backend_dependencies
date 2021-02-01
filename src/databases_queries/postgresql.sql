@@ -284,6 +284,24 @@ create table modules_prices (
 );
 
 /*
+ * Данный sql запрос создает таблицу в которой хранится информация касательно цен разных функций.
+ * У каждой функции в определенной стране есть своя цена.
+ * Цена функции будет разниться в зависимости от подписки (1 месяц, 3 месяца, 6 месяцев и т.п.)
+ */
+create table functions_prices (
+	entry_created_date_time timestamp not null default now(),
+	entry_updated_date_time timestamp not null default now(),
+	entry_deleted_date_time timestamp null,
+	function_id uuid not null,
+	foreign key (function_id) references functions (function_id),
+	country_id uuid not null,
+	foreign key (country_id) references countries (country_id),
+	price_id uuid not null,
+	foreign key (price_id) references prices (price_id),
+	days int not null
+);
+
+/*
  * Для валидации электронной почти на уровне базы данных был создан кастомный тип данных.
  */
 create extension citext;
@@ -1256,7 +1274,7 @@ insert into telegram_chat_rooms (
 );
 
 /*
- * Добавить столбецы, который хранит информацию по клиенту из WhatsApp канала.
+ * Добавить столбцы, которые хранят информацию по клиенту из WhatsApp канала.
  */
 alter table identified_users add whatsapp_profile varchar null;
 alter table identified_users add whatsapp_username varchar null;
@@ -1377,3 +1395,39 @@ create table telegram_business_accounts (
 	channel_id uuid not null,
 	foreign key (channel_id) references channels (channel_id)
 );
+
+/*
+ * Данный sql запрос создает таблицу в которой хранятся бизнес аккаунты из Facebook Messenger.
+ */
+create table facebook_messenger_business_accounts (
+	entry_created_date_time timestamp not null default now(),
+	entry_updated_date_time timestamp not null default now(),
+	entry_deleted_date_time timestamp null,
+	business_account varchar not null unique,
+	channel_id uuid not null,
+	foreign key (channel_id) references channels (channel_id)
+);
+
+/*
+ * В данной таблице идет сопоставление наших технических идентификаторов с идентификаторами из Facebook Messenger.
+ */
+create table facebook_messenger_chat_rooms (
+	entry_created_date_time timestamp not null default now(),
+	entry_updated_date_time timestamp not null default now(),
+	entry_deleted_date_time timestamp null,
+	chat_room_id uuid not null,
+	foreign key (chat_room_id) references chat_rooms (chat_room_id),
+	facebook_messenger_chat_id varchar not null
+);
+
+/*
+ * Данный sql запрос добавляет в таблицу unique constraint для уникальности технического идентификатора в рамках определенного канала.
+ */
+alter table facebook_messenger_chat_rooms add unique (chat_room_id, facebook_messenger_chat_id);
+
+
+/*
+ * Добавить столбец в таблицу "identified_users", который хранит "Page Scoped User Id" по клиенту из Facebook Messenger канала.
+ */
+alter table identified_users add facebook_messenger_psid varchar null;
+alter table identified_users add unique (facebook_messenger_psid);
