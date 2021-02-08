@@ -15,6 +15,12 @@ deploy:
             export STACK_NAME="Prod3beepBackendDependencies"
             export ENVIRONMENT_NAME="Prod"
           fi
+        - apt-get update && apt-get install -y python3-pip
+        - pip3 install -U awscli
+        - aws configure set default.region $AWS_DEFAULT_REGION
+        - aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
+        - aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
+        - aws s3 rm --recursive s3://$S3_BUCKET
         - pipe: 'atlassian/aws-sam-deploy:0.5.2'
           variables:
             AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
