@@ -18,8 +18,8 @@ deploy:
             STACK_PARAMETERS: |
               [
                 {
-                  "ParameterKey": "EnvironmentName",
-                  "ParameterValue": ${ENVIRONMENT_NAME}
+                  'ParameterKey': 'EnvironmentName',
+                  'ParameterValue: '${ENVIRONMENT_NAME}'
                 }
               ]
             WAIT: 'true'
