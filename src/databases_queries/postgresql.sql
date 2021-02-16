@@ -1461,5 +1461,5 @@ alter table internal_users drop column if exists internal_user_profile_photo_url
 /*
  * Добавить столбцы для хранения псевдонимов, основных и дополнительных аватарок пользователей.
  */
-alter table users add column nickname varchar;
+alter table users add column user_nickname varchar;
 alter table users add column user_profile_photo_url text;
