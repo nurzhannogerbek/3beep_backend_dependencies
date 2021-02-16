@@ -1425,7 +1425,6 @@ create table facebook_messenger_chat_rooms (
  */
 alter table facebook_messenger_chat_rooms add unique (chat_room_id, facebook_messenger_chat_id);
 
-
 /*
  * Добавить столбец в таблицу "identified_users", который хранит "Page Scoped User Id" по клиенту из Facebook Messenger канала.
  */
@@ -1441,10 +1440,17 @@ alter table internal_users drop column if exists country_id;
 /*
  * Поменять тип данных определенных столбцов связанных с дополнительными электронными адресами и номером телефона.
  */
-alter table identified_users alter column identified_user_secondary_email type email[];
-alter table internal_users alter column internal_user_secondary_email type email[];
-alter table identified_users alter column identified_user_secondary_phone_number type varchar[];
-alter table internal_users alter column internal_user_secondary_phone_number type varchar[];
+alter table identified_users drop constraint identified_users_identified_user_secondary_email_key;
+alter table identified_users alter column identified_user_secondary_email type email[] using array[identified_user_secondary_email];
+
+alter table internal_users drop constraint internal_users_internal_user_secondary_email_key;
+alter table internal_users alter column internal_user_secondary_email type email[] using array[internal_user_secondary_email];
+
+alter table identified_users drop constraint identified_users_identified_user_secondary_phone_number_key;
+alter table identified_users alter column identified_user_secondary_phone_number type varchar[] using array[identified_user_secondary_phone_number];
+
+alter table internal_users drop constraint internal_users_internal_user_secondary_phone_number_key;
+alter table internal_users alter column internal_user_secondary_phone_number type varchar[] using array[internal_user_secondary_phone_number];
 
 /*
  * Удалить столбцы связанные с аватарками идентифицированных и внутренних пользователей.
