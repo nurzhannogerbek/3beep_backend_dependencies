@@ -1431,3 +1431,29 @@ alter table facebook_messenger_chat_rooms add unique (chat_room_id, facebook_mes
  */
 alter table identified_users add facebook_messenger_psid varchar null;
 alter table identified_users add unique (facebook_messenger_psid);
+
+/*
+ * Удалить столбец "country_id" в таблицах "identified_users" и "internal_users".
+ */
+alter table identified_users drop column if exists country_id;
+alter table internal_users drop column if exists country_id;
+
+/*
+ * Поменять тип данных определенных столбцов связанных с дополнительными электронными адресами и номером телефона.
+ */
+alter table identified_users alter column identified_user_secondary_email type email[];
+alter table internal_users alter column internal_user_secondary_email type email[];
+alter table identified_users alter column identified_user_secondary_phone_number type varchar[];
+alter table internal_users alter column internal_user_secondary_phone_number type varchar[];
+
+/*
+ * Удалить столбцы связанные с аватарками идентифицированных и внутренних пользователей.
+ */
+alter table identified_users drop column if exists identified_user_profile_photo_url;
+alter table internal_users drop column if exists internal_user_profile_photo_url;
+
+/*
+ * Добавить столбцы для хранения псевдонимов, основных и дополнительных аватарок пользователей.
+ */
+alter table users add column nickname varchar;
+alter table users add column user_profile_photo_url text;
