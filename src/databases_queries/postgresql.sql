@@ -1463,3 +1463,8 @@ alter table internal_users drop column if exists internal_user_profile_photo_url
  */
 alter table users add column user_nickname varchar;
 alter table users add column user_profile_photo_url text;
+
+/*
+ * Сделать основной номер телефона обязательным для внутреннего пользователя.
+ */
+alter table internal_users alter column internal_user_primary_email set not null;
