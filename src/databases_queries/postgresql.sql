@@ -1468,3 +1468,29 @@ alter table users add column user_profile_photo_url text;
  * Сделать основной номер телефона обязательным для внутреннего пользователя.
  */
 alter table internal_users alter column internal_user_primary_email set not null;
+
+/*
+ * В таблицу "organizations" были добавлены дополнительные столбцы.
+ */
+alter table organizations add column organization_level smallint;
+alter table organizations add column parent_organization_level smallint;
+alter table organizations add column root_organization_level smallint;
+
+alter table organizations add column tree_organization_id text;
+alter table organizations add column tree_parent_organization_id text;
+alter table organizations add column tree_root_organization_id text;
+
+alter table organizations add column tree_organization_name text;
+alter table organizations add column tree_parent_organization_name text;
+alter table organizations add column tree_root_organization_name text;
+
+alter table organizations add column tree_organization_level text;
+alter table organizations add column tree_parent_organization_level text;
+alter table organizations add column tree_root_organization_level text;
+
+/*
+ * Удалить столбцы связанные с описанием организаций по причине ненадобности.
+ */
+alter table organizations drop column if exists organization_description;
+alter table organizations drop column if exists parent_organization_description;
+alter table organizations drop column if exists root_organization_description;
