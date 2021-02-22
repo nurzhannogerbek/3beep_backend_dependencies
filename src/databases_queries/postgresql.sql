@@ -1475,18 +1475,8 @@ alter table internal_users alter column internal_user_primary_email set not null
 alter table organizations add column organization_level smallint;
 alter table organizations add column parent_organization_level smallint;
 alter table organizations add column root_organization_level smallint;
-
 alter table organizations add column tree_organization_id text;
-alter table organizations add column tree_parent_organization_id text;
-alter table organizations add column tree_root_organization_id text;
-
 alter table organizations add column tree_organization_name text;
-alter table organizations add column tree_parent_organization_name text;
-alter table organizations add column tree_root_organization_name text;
-
-alter table organizations add column tree_organization_level text;
-alter table organizations add column tree_parent_organization_level text;
-alter table organizations add column tree_root_organization_level text;
 
 /*
  * Удалить столбцы связанные с описанием организаций по причине ненадобности.
@@ -1494,3 +1484,179 @@ alter table organizations add column tree_root_organization_level text;
 alter table organizations drop column if exists organization_description;
 alter table organizations drop column if exists parent_organization_description;
 alter table organizations drop column if exists root_organization_description;
+
+/*
+ * Создать функцию, которая генерирует nickname для пользователей.
+ */
+create or replace function generate_nickname() returns varchar as $$
+declare
+   nickname varchar;
+begin
+	select
+		concat(
+			(select adjective from nickname_adjectives order by random() limit 1),
+			' ',
+			(select noun from nickname_nouns order by random() limit 1)
+		)
+	into
+		nickname;
+	return nickname;
+end;
+$$ language plpgsql;
+
+/*
+ * Создать таблицы для прилагательных и существительных для nickname.
+ */
+create table nickname_adjectives (adjective varchar not null);
+update nickname_adjectives set adjective=initcap(adjective);
+create table nickname_nouns (noun varchar not null);
+update nickname_nouns set noun=initcap(noun);
+
+/*
+ * Привязать к столбцу функцию авто-генерации nickname.
+ * Заполнить nickname у существующих пользователей.
+ */
+alter table only users alter column user_nickname set default generate_nickname();
+update users set user_nickname = generate_nickname();
+
+/*
+ * Создать таблицу для правил транслитерации.
+ */
+create table if not exists transliteration_rules (
+ 	original_letter character varying not null primary key,
+ 	transliterated_letter character varying
+);
+
+/*
+ * Создать функцию для транслитерации.
+ */
+create or replace function transliterate(input_text character varying)
+returns character varying as $$
+declare
+	record record;
+begin
+	for record in
+		select
+			original_letter,
+			transliterated_letter
+		from
+			transliteration_rules
+		where
+			original_letter in (
+				select
+					letter
+				from
+					(select unnest(regexp_split_to_array(input_text, '')) as letter) x
+				where
+					x.letter not similar to '[a-zA-Z1-9]'
+				group by
+					x.letter
+			) loop input_text = replace(input_text, record.original_letter, record.transliterated_letter);
+	end loop;
+	return trim(input_text);
+end;
+$$ language plpgsql volatile cost 10;
+
+/*
+ * Примеры применения транслитерации.
+ */
+select transliterate('鍖椾喊');
+select transliterate('Любовь');
+select transliterate('stößt');
+
+/*
+ * Создать функцию, которая генерирует url адреса аватарок пользователей.
+ */
+create or replace function generate_user_profile_photo_url(user_identifier uuid) returns varchar as
+$$
+declare
+	user_profile_photo_url text;
+begin
+	select
+		case
+			when (users.internal_user_id is null and users.identified_user_id is null and users.unidentified_user_id is not null)
+			then concat(
+				'https://3beep-public-assets.s3.eu-central-1.amazonaws.com/userpics/',
+				lower(left(users.user_nickname, 1)),
+				'.jpg'
+			)
+			when (users.internal_user_id is null and users.identified_user_id is not null and users.unidentified_user_id is null)
+			then concat(
+				'https://3beep-public-assets.s3.eu-central-1.amazonaws.com/userpics/',
+				coalesce(regexp_replace(lower(transliterate(left(identified_users.identified_user_first_name, 1))), '[^a-zA-Z]', '', 'g'), 'undefined'),
+				'.jpg'
+			)
+			when (users.internal_user_id is not null and users.identified_user_id is null and users.unidentified_user_id is null)
+			then concat(
+				'https://3beep-public-assets.s3.eu-central-1.amazonaws.com/userpics/',
+				coalesce(lower(transliterate(left(internal_users.internal_user_first_name, 1))), 'undefined'),
+				'.jpg'
+			)
+			else 'https://3beep-public-assets.s3.eu-central-1.amazonaws.com/userpics/undefined.jpg'
+		end as user_profile_photo_url
+	from
+		users
+	left join internal_users on
+		users.internal_user_id = internal_users.internal_user_id
+	left join identified_users on
+		users.identified_user_id = identified_users.identified_user_id
+	where
+		users.user_id = user_identifier
+	limit 1
+	into
+		user_profile_photo_url;
+	return user_profile_photo_url;
+end;
+$$ language plpgsql;
+
+/*
+ * Создать функцию, которая устанавливает значение столбцу по авто-генерации url адресов аватарок пользователей.
+ */
+create or replace function trigger_user_profile_photo_url() returns trigger as
+$$
+begin
+	case
+		when (new.internal_user_id is null and new.identified_user_id is null and new.unidentified_user_id is not null) then
+			new.user_profile_photo_url = concat(
+				'https://3beep-public-assets.s3.eu-central-1.amazonaws.com/userpics/',
+				lower(left(new.user_nickname, 1)),
+				'.jpg'
+			);
+		when (new.internal_user_id is null and new.identified_user_id is not null and new.unidentified_user_id is null) then
+			new.user_profile_photo_url = concat(
+				'https://3beep-public-assets.s3.eu-central-1.amazonaws.com/userpics/',
+				coalesce(regexp_replace(lower(transliterate(left((select identified_user_first_name from identified_users where identified_user_id = new.identified_user_id limit 1), 1))), '[^a-zA-Z]', '', 'g'), 'undefined'),
+				'.jpg'
+			);
+		when (new.internal_user_id is not null and new.identified_user_id is null and new.unidentified_user_id is null) then
+			new.user_profile_photo_url = concat(
+				'https://3beep-public-assets.s3.eu-central-1.amazonaws.com/userpics/',
+				coalesce(regexp_replace(lower(transliterate(left((select internal_user_first_name from internal_users where internal_user_id = new.internal_user_id limit 1), 1))), '[^a-zA-Z]', '', 'g'), 'undefined'),
+				'.jpg'
+			);
+		else
+			new.user_profile_photo_url = 'https://3beep-public-assets.s3.eu-central-1.amazonaws.com/userpics/undefined.jpg';
+	end case;
+	return new;
+end;
+$$ language plpgsql;
+
+/*
+ * Удалить функцию под названием "trigger_user_profile_photo_url".
+ */
+drop function if exists trigger_user_profile_photo_url;
+
+/*
+ * Создать триггер "trigger_user_profile_photo_url" на таблицу "users", которая перед insert записи в таблицу вызывает процедуру.
+ */
+create trigger trigger_user_profile_photo_url before insert on users for each row execute procedure trigger_user_profile_photo_url();
+
+/*
+ * Удалить триггер под названием "trigger_user_profile_photo_url".
+ */
+drop trigger if exists trigger_user_profile_photo_url on users;
+
+/*
+ * Заполнить url адреса аватарок у существующих пользователей.
+ */
+update users set user_profile_photo_url = generate_user_profile_photo_url(user_id);
