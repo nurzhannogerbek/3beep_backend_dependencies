@@ -9,6 +9,11 @@ def camel_case(string):
     return string[0].lower() + string[1:]
 
 
+# The function converts the string to snake case.
+def snake_case(string):
+    return sub(r'(?<!^)(?=[A-Z])', '_', string).lower()
+
+
 def date_time_formatter(string):
     regex = "[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1]) (2[0-3]|[01][0-9]):[0-5][0-9]:[0-5][0-9].[0-9]{3}"
     formatted_date_time = search(regex, string).group()
