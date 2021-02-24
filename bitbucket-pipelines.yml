@@ -19,7 +19,7 @@ deploy:
               [
                 {
                   'ParameterKey': 'EnvironmentName',
-                  'ParameterValue: '${ENVIRONMENT_NAME}'
+                  'ParameterValue': '${ENVIRONMENT_NAME}'
                 }
               ]
             WAIT: 'true'
