@@ -1660,3 +1660,9 @@ drop trigger if exists trigger_user_profile_photo_url on users;
  * Заполнить url адреса аватарок у существующих пользователей.
  */
 update users set user_profile_photo_url = generate_user_profile_photo_url(user_id);
+
+/*
+ * У идентифицированных пользователей убрать уникальность поля на основной номер телефона и email.
+ */
+alter table identified_users drop constraint identified_users_identified_user_primary_email_key;
+alter table identified_users drop constraint identified_users_identified_user_primary_phone_number_key;
