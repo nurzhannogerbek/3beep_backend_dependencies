@@ -1666,3 +1666,51 @@ update users set user_profile_photo_url = generate_user_profile_photo_url(user_i
  */
 alter table identified_users drop constraint identified_users_identified_user_primary_email_key;
 alter table identified_users drop constraint identified_users_identified_user_primary_phone_number_key;
+
+/*
+ * Данный sql запрос создает таблицу в которой хранится бизнес аккаунты из Instagram Private.
+ */
+create table instagram_private_business_accounts (
+	entry_created_date_time timestamp not null default now(),
+	entry_updated_date_time timestamp not null default now(),
+	entry_deleted_date_time timestamp null,
+	business_account varchar not null unique,
+	channel_id uuid not null,
+	foreign key (channel_id) references channels (channel_id)
+);
+
+/*
+ * В данной таблице идет сопоставление наших технических идентификаторов с идентификаторами из Instagram Private.
+ */
+create table instagram_private_chat_rooms (
+	entry_created_date_time timestamp not null default now(),
+	entry_updated_date_time timestamp not null default now(),
+	entry_deleted_date_time timestamp null,
+	chat_room_id uuid not null,
+	foreign key (chat_room_id) references chat_rooms (chat_room_id),
+	instagram_private_chat_id varchar not null
+);
+
+/*
+ * Данный sql запрос добавляет в таблицу unique constraint для уникальности технического идентификатора в рамках определенного канала.
+ */
+alter table instagram_private_chat_rooms add unique (chat_room_id, instagram_private_chat_id);
+
+/*
+ * Данный sql запрос создает таблицу 'channel_statuses'.
+ * В таблице хранится информация касательно статусов каналов.
+ */
+create table channel_statuses (
+	entry_created_date_time timestamp not null default now(),
+	entry_updated_date_time timestamp not null default now(),
+	entry_deleted_date_time timestamp null,
+	channel_status_id uuid not null default uuid_generate_v4() primary key,
+	channel_status_name varchar not null,
+	channel_status_description text null
+);
+
+/*
+ * Данный sql запрос создает foreign key столбец 'channel_status_id' в таблице 'channels'.
+ */
+alter table channels add column channel_status_id uuid;
+alter table channels add foreign key (channel_status_id) references channel_statuses(channel_status_id);
