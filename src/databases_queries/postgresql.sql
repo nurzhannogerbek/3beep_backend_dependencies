@@ -1714,3 +1714,9 @@ create table channel_statuses (
  */
 alter table channels add column channel_status_id uuid;
 alter table channels add foreign key (channel_status_id) references channel_statuses(channel_status_id);
+
+/*
+ * Добавить столбец, который хранит информацию по клиенту из Instagram Private канала.
+ */
+alter table identified_users add instagram_private_username varchar null;
+alter table identified_users add unique (instagram_private_username);
