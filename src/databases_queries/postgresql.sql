@@ -1617,23 +1617,29 @@ $$
 begin
 	case
 		when (new.internal_user_id is null and new.identified_user_id is null and new.unidentified_user_id is not null) then
-			new.user_profile_photo_url = concat(
-				'https://3beep-public-assets.s3.eu-central-1.amazonaws.com/userpics/',
-				lower(left(new.user_nickname, 1)),
-				'.jpg'
-			);
+			if (new.user_profile_photo_url is null) then
+				new.user_profile_photo_url = concat(
+					'https://3beep-public-assets.s3.eu-central-1.amazonaws.com/userpics/',
+					lower(left(new.user_nickname, 1)),
+					'.jpg'
+				);
+			end if;
 		when (new.internal_user_id is null and new.identified_user_id is not null and new.unidentified_user_id is null) then
-			new.user_profile_photo_url = concat(
-				'https://3beep-public-assets.s3.eu-central-1.amazonaws.com/userpics/',
-				coalesce(regexp_replace(lower(transliterate(left((select identified_user_first_name from identified_users where identified_user_id = new.identified_user_id limit 1), 1))), '[^a-zA-Z]', '', 'g'), 'undefined'),
-				'.jpg'
-			);
+			if (new.user_profile_photo_url is null) then
+				new.user_profile_photo_url = concat(
+					'https://3beep-public-assets.s3.eu-central-1.amazonaws.com/userpics/',
+					coalesce(regexp_replace(lower(transliterate(left((select identified_user_first_name from identified_users where identified_user_id = new.identified_user_id limit 1), 1))), '[^a-zA-Z]', '', 'g'), 'undefined'),
+					'.jpg'
+				);
+			end if;
 		when (new.internal_user_id is not null and new.identified_user_id is null and new.unidentified_user_id is null) then
-			new.user_profile_photo_url = concat(
-				'https://3beep-public-assets.s3.eu-central-1.amazonaws.com/userpics/',
-				coalesce(regexp_replace(lower(transliterate(left((select internal_user_first_name from internal_users where internal_user_id = new.internal_user_id limit 1), 1))), '[^a-zA-Z]', '', 'g'), 'undefined'),
-				'.jpg'
+			if (new.user_profile_photo_url is null) then
+				new.user_profile_photo_url = concat(
+					'https://3beep-public-assets.s3.eu-central-1.amazonaws.com/userpics/',
+					coalesce(regexp_replace(lower(transliterate(left((select internal_user_first_name from internal_users where internal_user_id = new.internal_user_id limit 1), 1))), '[^a-zA-Z]', '', 'g'), 'undefined'),
+					'.jpg'
 			);
+			end if;
 		else
 			new.user_profile_photo_url = 'https://3beep-public-assets.s3.eu-central-1.amazonaws.com/userpics/undefined.jpg';
 	end case;
