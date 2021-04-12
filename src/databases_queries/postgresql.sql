@@ -1728,3 +1728,14 @@ alter table identified_users add instagram_private_username varchar null;
 alter table identified_users add unique (instagram_private_username);
 alter table identified_users add instagram_private_user_id varchar null;
 alter table identified_users add unique (instagram_private_user_id);
+
+/*
+ * Удалить уникальность связки 'channel_type_id' и 'channel_technical_id'.
+ */
+alter table channels drop constraint channels_channel_type_id_channel_technical_id_key;
+
+/*
+ * Поменять свойства NULL / NOT NULL в столбцах.
+ */
+alter table channels alter column channel_technical_id drop not null;
+alter table channels alter column channel_status_id set not null;
