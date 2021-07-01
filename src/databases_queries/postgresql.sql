@@ -1763,3 +1763,40 @@ alter table vk_chat_rooms add unique (chat_room_id, vk_chat_id);
  */
 alter table identified_users add vk_user_id varchar null;
 alter table identified_users add unique (vk_user_id);
+
+/*
+ * Данный sql запрос создает таблицу в которой хранится бизнес аккаунты из Instagram.
+ */
+create table instagram_business_accounts (
+	entry_created_date_time timestamp not null default now(),
+	entry_updated_date_time timestamp not null default now(),
+	entry_deleted_date_time timestamp null,
+	business_account varchar not null unique,
+	channel_id uuid not null,
+	foreign key (channel_id) references channels (channel_id)
+);
+
+/*
+ * В данной таблице идет сопоставление наших технических идентификаторов с идентификаторами из Instagram.
+ */
+create table instagram_chat_rooms (
+	entry_created_date_time timestamp not null default now(),
+	entry_updated_date_time timestamp not null default now(),
+	entry_deleted_date_time timestamp null,
+	chat_room_id uuid not null,
+	foreign key (chat_room_id) references chat_rooms (chat_room_id),
+	instagram_chat_id varchar not null
+);
+
+/*
+ * Данный sql запрос добавляет в таблицу unique constraint для уникальности технического идентификатора в рамках определенного канала.
+ */
+alter table instagram_chat_rooms add unique (chat_room_id, instagram_chat_id);
+
+/*
+ * Добавить столбцы, которые хранят информацию по клиенту из Instagram канала.
+ */
+alter table identified_users add instagram_username varchar null;
+alter table identified_users add unique (instagram_username);
+alter table identified_users add instagram_user_id varchar null;
+alter table identified_users add unique (instagram_user_id);
