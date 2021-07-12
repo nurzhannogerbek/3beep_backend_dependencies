@@ -1805,9 +1805,13 @@ create table instagram_chat_rooms (
 alter table instagram_chat_rooms add unique (chat_room_id, instagram_chat_id);
 
 /*
- * Добавить столбцы, которые хранят информацию по клиенту из Instagram канала.
+ * Добавить столбец в таблицу "identified_users", который хранит "Business Scoped ID" по клиенту из Instagram канала.
  */
-alter table identified_users add instagram_username varchar null;
-alter table identified_users add unique (instagram_username);
-alter table identified_users add instagram_user_id varchar null;
-alter table identified_users add unique (instagram_user_id);
+alter table identified_users add instagram_bsid varchar null;
+alter table identified_users add unique (instagram_bsid);
+
+/*
+ * Добавить столбец в таблицу "identified_users", который хранит текст, который пользователь Instagram ввел в качестве имени.
+ * Важная пометка. Данный текст может содержать любой текст, который вписал пользователь. Аналог поле "whatsapp_profile".
+ */
+alter table identified_users add instagram_profile varchar null;
